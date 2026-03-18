@@ -1,6 +1,6 @@
 # SecureScope — AI-Powered Security Log Analyzer
 
-A full-stack cybersecurity tool that analyzes raw server/auth logs using Anthropic Claude AI and returns structured threat reports.
+A full-stack cybersecurity tool that analyzes raw server/auth logs using Groq AI and returns structured threat reports.
 
 ## Stack
 
@@ -8,12 +8,11 @@ A full-stack cybersecurity tool that analyzes raw server/auth logs using Anthrop
 |-----------|-------------------------------------|
 | Frontend  | React 18 + Vite + Tailwind CSS      |
 | Backend   | Python FastAPI + Uvicorn            |
-| AI Engine | Anthropic Claude claude-sonnet-4-20250514 |
+| AI Engine | Groq API (llama-3.3-70b-versatile)  |
 
 ---
 
 ## Project Structure
-
 ```
 securescope/
 ├── frontend/           # Vite + React app
@@ -32,8 +31,8 @@ securescope/
     ├── routes/
     │   └── analyze.py  # POST /analyze
     ├── services/
-    │   ├── prompt_builder.py   # Builds Claude prompt
-    │   └── response_parser.py  # Parses Claude response
+    │   ├── prompt_builder.py   # Builds AI prompt
+    │   └── response_parser.py  # Parses AI response
     ├── models/
     │   └── schemas.py          # Pydantic request/response models
     ├── .env.example
@@ -45,26 +44,29 @@ securescope/
 ## Setup & Running
 
 ### 1. Backend
-
 ```bash
 cd backend
+
+# Create and activate virtual environment
+python -m venv .venv
+.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # Mac/Linux
 
 # Install Python dependencies
 pip install -r requirements.txt
 
-# Set your Anthropic API key
+# Set your Groq API key
 cp .env.example .env
-# Open .env and replace `your_anthropic_api_key_here` with your real key
+# Open .env and replace `your_groq_api_key_here` with your real key
 
 # Start the server
-uvicorn main:app --reload --port 8000
+python -m uvicorn main:app --reload
 ```
 
-The API will be available at `http://localhost:8000`.  
+The API will be available at `http://localhost:8000`.
 Health check: `GET http://localhost:8000/health` → `{"status":"ok"}`
 
 ### 2. Frontend
-
 ```bash
 cd frontend
 
@@ -77,8 +79,6 @@ npm run dev
 
 Open `http://localhost:5173` in your browser.
 
-> The Vite dev server proxies all `/analyze` and `/health` requests to `http://localhost:8000` automatically.
-
 ---
 
 ## API Contract
@@ -87,7 +87,7 @@ Open `http://localhost:5173` in your browser.
 
 **Request:**
 ```json
-{ "logs": "<raw log text>" }
+{ "logs": "" }
 ```
 
 **Response:**
@@ -111,15 +111,18 @@ Open `http://localhost:5173` in your browser.
 ```
 
 ### `GET /health`
-
 ```json
 { "status": "ok" }
 ```
 
 ---
 
-## Getting an Anthropic API Key
+## Getting a Groq API Key
 
-1. Go to [console.anthropic.com](https://console.anthropic.com)
-2. Create an account and navigate to **API Keys**
-3. Generate a new key and paste it into `backend/.env`
+1. Go to [console.groq.com](https://console.groq.com)
+2. Sign up with Google or email — no credit card required
+3. Navigate to **API Keys** → **Create API Key**
+4. Paste the key into `backend/.env`
+```dotenv
+GROQ_API_KEY=your_groq_api_key_here
+```
