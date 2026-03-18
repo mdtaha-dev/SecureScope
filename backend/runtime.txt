@@ -1,5 +1,1 @@
-fastapi
-uvicorn[standard]
-groq
-python-dotenv
-pydantic
+3.11.0
