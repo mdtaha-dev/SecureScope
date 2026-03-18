@@ -41,8 +41,8 @@ function LogInput({ onAnalyze }) {
     setError(null)
 
     try {
-      // POST to /analyze — proxied to http://localhost:8000/analyze in dev
-      const res = await fetch('/analyze', {
+      // POST to Render backend
+      const res = await fetch('https://securescope-backend.onrender.com/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ logs: logText }),
@@ -136,7 +136,6 @@ function LogInput({ onAnalyze }) {
             >
               {loading ? (
                 <>
-                  {/* Animated spinner icon when loading */}
                   <span
                     className="material-symbols-outlined text-lg animate-spin"
                     style={{ fontVariationSettings: "'FILL' 1" }}
