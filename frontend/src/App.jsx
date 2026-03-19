@@ -50,7 +50,7 @@ function App() {
       {/* Footer */}
       <footer className="mt-auto py-8 border-t border-outline-variant/10 text-center">
         <p className="text-[11px] text-on-surface-variant/40 tracking-widest uppercase">
-          © 2025 SecureScope Intelligence — Encrypted Analysis Protocol Active
+          © 2026 SecureScope Intelligence — Encrypted Analysis Protocol Active
         </p>
       </footer>
     </div>
