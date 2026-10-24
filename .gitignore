@@ -6,4 +6,8 @@ __pycache__
 
 # Node
 node_modules
-dist
+dist__pycache__/
+*.pyc
+.venv/
+*.local
+.vscode/
