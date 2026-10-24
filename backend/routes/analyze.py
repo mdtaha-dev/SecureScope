@@ -47,7 +47,7 @@ async def analyze_logs(request: AnalyzeRequest):
 
         # Call the Llama 3.3 70B model via Groq
         message = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model=os.getenv("GROQ_MODEL", "openai/gpt-oss-120b"),
             messages=[
                 {
                     "role": "user",

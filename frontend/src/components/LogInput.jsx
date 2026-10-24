@@ -11,65 +11,70 @@
                       when the API call succeeds
    ============================================================ */
 
-import { useState } from 'react'
+import { useState } from "react";
 
 // Placeholder log text shown in the textarea before the user types
 const PLACEHOLDER = `Oct 12 14:02:11 dev-srv-01 sshd[21332]: Failed password for root from 192.168.1.105 port 54332 ssh2
 Oct 12 14:02:14 dev-srv-01 sshd[21332]: Failed password for root from 192.168.1.105 port 54332 ssh2
 Oct 12 14:02:18 dev-srv-01 sshd[21332]: Connection closed by 192.168.1.105 port 54332 [preauth]
-Oct 12 14:05:01 dev-srv-01 CRON[21450]: pam_unix(cron:session): session opened for user root`
+Oct 12 14:05:01 dev-srv-01 CRON[21450]: pam_unix(cron:session): session opened for user root`;
 
 function LogInput({ onAnalyze }) {
-  const [logText, setLogText] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [logText, setLogText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Compute line count from the current textarea value
   const lineCount = logText.trim()
-    ? logText.split('\n').length.toLocaleString()
-    : '0'
+    ? logText.split("\n").length.toLocaleString()
+    : "0";
 
   // Handle the "Analyze Logs" button click
   const handleSubmit = async () => {
     // Validate: must have some log content
     if (!logText.trim()) {
-      setError('Please paste some log content before analyzing.')
-      return
+      setError("Please paste some log content before analyzing.");
+      return;
     }
 
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
 
     try {
       // POST to Render backend
-      const res = await fetch('https://securescope-backend.onrender.com/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const API_URL =
+        import.meta.env.VITE_API_URL ||
+        "https://securescope-backend.onrender.com";
+      const res = await fetch(`${API_URL}/analyze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ logs: logText }),
-      })
+      });
 
       if (!res.ok) {
         // Try to parse a detail message from FastAPI error responses
-        const errBody = await res.json().catch(() => ({}))
-        throw new Error(errBody.detail || `Server error: ${res.status}`)
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody.detail || `Server error: ${res.status}`);
       }
 
-      const data = await res.json()
+      const data = await res.json();
       // Pass the result up to App.jsx which will switch to the results view
-      onAnalyze(data)
+      onAnalyze(data);
     } catch (err) {
-      setError(err.message || 'An unexpected error occurred. Is the backend running?')
+      setError(
+        err.message || "An unexpected error occurred. Is the backend running?",
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <section className="flex flex-col items-center animate-in fade-in duration-700">
       {/* Hero text */}
       <div className="text-center mb-12 space-y-4">
         <h1 className="text-5xl font-bold font-headline tracking-tight text-on-surface">
-          Analyze Security Logs{' '}
+          Analyze Security Logs{" "}
           <span className="text-primary italic">with AI</span>
         </h1>
         <p className="text-on-surface-variant max-w-2xl mx-auto text-lg leading-relaxed">
@@ -95,7 +100,9 @@ function LogInput({ onAnalyze }) {
               log_input_stream.txt
             </span>
             <div className="flex items-center gap-3">
-              <span className="text-[11px] font-mono text-primary">SSH_AUTH_READY</span>
+              <span className="text-[11px] font-mono text-primary">
+                SSH_AUTH_READY
+              </span>
             </div>
           </div>
 
@@ -105,8 +112,8 @@ function LogInput({ onAnalyze }) {
             placeholder={PLACEHOLDER}
             value={logText}
             onChange={(e) => {
-              setLogText(e.target.value)
-              setError(null) // Clear error when user starts typing
+              setLogText(e.target.value);
+              setError(null); // Clear error when user starts typing
             }}
             spellCheck={false}
           />
@@ -118,13 +125,17 @@ function LogInput({ onAnalyze }) {
                 <span className="text-[10px] text-on-surface-variant uppercase tracking-tighter">
                   Line Count
                 </span>
-                <span className="text-sm font-mono font-bold text-on-surface">{lineCount}</span>
+                <span className="text-sm font-mono font-bold text-on-surface">
+                  {lineCount}
+                </span>
               </div>
               <div className="flex flex-col">
                 <span className="text-[10px] text-on-surface-variant uppercase tracking-tighter">
                   Encoding
                 </span>
-                <span className="text-sm font-mono font-bold text-on-surface">UTF-8</span>
+                <span className="text-sm font-mono font-bold text-on-surface">
+                  UTF-8
+                </span>
               </div>
             </div>
 
@@ -171,29 +182,39 @@ function LogInput({ onAnalyze }) {
       {/* Feature hint cards below the input panel */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 w-full max-w-5xl">
         <div className="p-6 bg-surface-container-low rounded-xl border border-outline-variant/10">
-          <span className="material-symbols-outlined text-primary mb-3 block">security</span>
+          <span className="material-symbols-outlined text-primary mb-3 block">
+            security
+          </span>
           <h3 className="font-bold mb-2">Threat Detection</h3>
           <p className="text-sm text-on-surface-variant">
-            Automatically identify brute force, SQL injection, and unauthorized access patterns.
+            Automatically identify brute force, SQL injection, and unauthorized
+            access patterns.
           </p>
         </div>
         <div className="p-6 bg-surface-container-low rounded-xl border border-outline-variant/10">
-          <span className="material-symbols-outlined text-tertiary mb-3 block">auto_graph</span>
+          <span className="material-symbols-outlined text-tertiary mb-3 block">
+            auto_graph
+          </span>
           <h3 className="font-bold mb-2">Anomalous Activity</h3>
           <p className="text-sm text-on-surface-variant">
-            Spot unusual user behavior and timed execution patterns with AI clustering.
+            Spot unusual user behavior and timed execution patterns with AI
+            clustering.
           </p>
         </div>
         <div className="p-6 bg-surface-container-low rounded-xl border border-outline-variant/10">
-          <span className="material-symbols-outlined text-secondary mb-3 block">bolt</span>
+          <span className="material-symbols-outlined text-secondary mb-3 block">
+            bolt
+          </span>
           <h3 className="font-bold mb-2">Rapid Insights</h3>
           <p className="text-sm text-on-surface-variant">
-            Get actionable recommendations and immediate security posture summaries.
+            Get actionable recommendations and immediate security posture
+            summaries.
           </p>
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export default LogInput
+export default LogInput;
+
